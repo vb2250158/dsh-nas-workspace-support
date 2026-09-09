@@ -26,7 +26,7 @@ async function loadClientBundle() {
 function clientContext(value = settings) {
   const effects = []
   const opened = []
-  const original = async path => { opened.push(path) }
+  const original = async input => { opened.push(input.path) }
   const settingsScope = {
     bind() {
       return { getSnapshot: () => ({ value }), subscribe: () => () => {}, set: async () => {} }
@@ -34,7 +34,7 @@ function clientContext(value = settings) {
   }
   const ctx = {
     effect(callback) { const dispose = callback(); effects.push(dispose); return dispose },
-    workspaces: { openPath: original },
+    workspaces: { create: original },
     settingsScope,
   }
   return { ctx, effects, opened, original }
@@ -44,8 +44,8 @@ test('NAS browser module maps the current computer settings before opening', asy
   const client = await loadClientBundle()
   const state = clientContext()
   client.apply(state.ctx)
-  await state.ctx.workspaces.openPath('\\\\server\\projects\\plugins\\catalog.json')
-  await state.ctx.workspaces.openPath('D:\\private\\dsh-plugins\\README.md')
+  await state.ctx.workspaces.create({ path: '\\\\server\\projects\\plugins\\catalog.json' })
+  await state.ctx.workspaces.create({ path: 'D:\\private\\dsh-plugins\\README.md' })
   assert.deepEqual(client.inject, ['settingsScope', 'workspaces'])
   assert.deepEqual(state.opened, ['X:\\projects\\plugins\\catalog.json', 'D:\\private\\dsh-plugins\\README.md'])
 })
@@ -54,8 +54,8 @@ test('NAS browser module keeps paths unchanged without a mapping and restores th
   const client = await loadClientBundle()
   const state = clientContext({ mappings: [], openPluginsRoot: '' })
   client.apply(state.ctx)
-  await state.ctx.workspaces.openPath('\\\\server\\projects\\plugins\\catalog.json')
+  await state.ctx.workspaces.create({ path: '\\\\server\\projects\\plugins\\catalog.json' })
   state.effects[0]()
   assert.deepEqual(state.opened, ['\\\\server\\projects\\plugins\\catalog.json'])
-  assert.equal(state.ctx.workspaces.openPath, state.original)
+  assert.equal(state.ctx.workspaces.create, state.original)
 })
