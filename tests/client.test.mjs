@@ -27,15 +27,15 @@ function clientContext(value = settings) {
   const effects = []
   const opened = []
   const original = async input => { opened.push(input.path) }
-  const settingsScope = {
-    bind() {
+  const configForms = {
+    get() {
       return { getSnapshot: () => ({ value }), subscribe: () => () => {}, set: async () => {} }
     },
   }
   const ctx = {
     effect(callback) { const dispose = callback(); effects.push(dispose); return dispose },
     workspaces: { create: original },
-    settingsScope,
+    configForms,
   }
   return { ctx, effects, opened, original }
 }
@@ -46,7 +46,7 @@ test('NAS browser module maps the current computer settings before opening', asy
   client.apply(state.ctx)
   await state.ctx.workspaces.create({ path: '\\\\server\\projects\\plugins\\catalog.json' })
   await state.ctx.workspaces.create({ path: 'D:\\private\\dsh-plugins\\README.md' })
-  assert.deepEqual(client.inject, ['settingsScope', 'workspaces'])
+  assert.deepEqual(client.inject, ['configForms', 'workspaces'])
   assert.deepEqual(state.opened, ['X:\\projects\\plugins\\catalog.json', 'D:\\private\\dsh-plugins\\README.md'])
 })
 

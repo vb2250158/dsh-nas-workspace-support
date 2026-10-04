@@ -1,5 +1,7 @@
 # dsh-nas-workspace-support
 
+This release requires DSH 0.2.1-alpha.1 or a compatible 0.2 release. See [compatibility details](docs/dsh-0.2-compatibility.md).
+
 为 NAS 工作区提供可配置的路径映射与打开行为。
 
 ## 安装

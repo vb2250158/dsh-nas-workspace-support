@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
-  apply,
+  apply, Config,
   NAS_WORKSPACE_SETTINGS_NAMESPACE,
   nasWorkspacePrompt,
   resolveNasSettings,
@@ -44,17 +44,12 @@ test('registers computer-local settings and a dynamic public prompt section', ()
   const registrations = []
   const scope = {
     systemPrompt: { section(section) { sections.push(section); return () => {} } },
-    settings: {
-      register(namespace, _schema, options) {
-        registrations.push({ namespace, options })
-        return { get: () => settings }
-      },
-    },
+    effect: fn => fn(),
+    settings: { configure(presentation) { registrations.push(presentation); return () => {} } },
   }
   const ctx = { inject(_services, callback) { callback(scope) } }
-  apply(ctx)
-  assert.equal(registrations[0].namespace, NAS_WORKSPACE_SETTINGS_NAMESPACE)
-  assert.deepEqual(registrations[0].options.base, { mappings: [], openPluginsRoot: '' })
+  apply(ctx, Config(settings))
+  assert.deepEqual(registrations[0], { auto: true })
   assert.equal(sections[0].name, 'private:nas-workspace-support')
   assert.match(sections[0].text(), /X:\\projects/)
 })
