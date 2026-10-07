@@ -1,12 +1,14 @@
 {
   "name": "dsh-nas-workspace-support",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
     ".": "./lib/index.js",
     "./client": "./lib/client.js",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
   },
   "dsh": {
     "client": {
@@ -32,7 +34,10 @@
     "cordis.patch.yml",
     "README.md",
     "LICENSE",
-    "docs"
+    "docs",
+    "locale",
+    "icon.svg",
+    "ICON_LICENSE.txt"
   ],
   "license": "MIT",
   "repository": {
@@ -65,5 +70,6 @@
     "@deepseek-ai/dsh-client-ui-settings": "0.2.1-alpha.1",
     "@deepseek-ai/dsh-client-ui-slots": "0.2.1-alpha.1",
     "@deepseek-ai/dsh-settings": "0.2.1-alpha.1"
-  }
+  },
+  "icon": "./icon.svg"
 }
