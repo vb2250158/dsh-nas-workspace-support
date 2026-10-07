@@ -1,5 +1,10 @@
 # 0.3.1
 
+## 0.3.5 (2026-10-07)
+
+- 缩小图标绘制内容约三分之一，增加方框内的留白。
+- Reduce icon artwork by one third with a centered, padded viewBox.
+
 ## 0.3.4 (2026-10-07)
 
 - 为插件列表提供中英文名称与说明，并发布独立的 SVG 图标。
